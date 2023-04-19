@@ -1,0 +1,71 @@
+========================================
+Created a new app called Authentication.
+========================================
+
+===First, the User Object: (models.py)===
+
+contains the following properties: [username, email, first_name, last_name, is_active, is_staff, created_at, updated_at]
+
+Using the @property decorator, you can create a "computed" like property.
+
+@property
+def token(self):
+    return self._generate_jwt_token
+
+def _generate_jwt_token(self):
+    This function will generate a JWT token and return it.  
+
+A UserManager is created and set to User.objects
+
+it has two methods: create_user and create_superuser
+
+Some new functions can be added to the User Manager that gives easy assess to create Users or other tables 
+
+in different ways and makes it very convenient.
+
+Using the @property also makes it easy to easily create often used properties for easy access.
+
+========
+Views.py
+========
+
+views.py is basically the controllers.  Controllers are separated out from routes where routes are strictly in urls.py.
+
+using the rest_framework, there are a lot of tools that makes things easier to write controllers.
+
+The rest_framework comes with convenient "Views" like APIView and RetrieveUpdateAPIView.  
+Extending these Classes makes it so it is easy to set the data models and permissions. It makes for easy validation
+
+of the data involved.
+
+===
+RegistrationAPIView:
+    -Allows anyone to access this view.  
+    -The payload is shaped by the serializer that handles our data validation: RegistrationSerializer
+    -The return object when retrieving the USER object is shaped by UserJSONRenderer.
+    -A POST method is available to create a new user (register)
+
+LoginAPIView:
+    -Allow anyone to access this view.
+    -The payload is shaped by the serializer that handles our data validation and login verification: LoginSerializer
+    -The return object when retrieving the USER object is shaped by UserJSONRenderer.
+    -A POST method for LOGIN
+
+UserRetrieveUpdateAPIView:
+    -Requires Authentication token: jwt
+    -retrieve method for returning the user object
+    -update method
+
+
+===========
+backends.py
+===========
+
+the backends.py is what handles the authentication when wanting a custom handling of the authentication.
+settings.py was updated to use this feature by adding: 
+
+'DEFAULT_AUTHENTICATION_CLASSES': ('authentication.backends.JWTAuthentication',)
+
+The Backends.py simply acts as a way to handle the JWT token and verify whether the USER should be authenticated or not.
+
+
